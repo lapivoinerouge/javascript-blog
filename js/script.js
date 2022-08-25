@@ -13,22 +13,22 @@
     for (let activeLink of activeLinks) {
       activeLink.classList.remove('active');
     }
-    
+
     /* add class 'active' to the clicked link */
     clickedElement.classList.add('active');
-  
+
     /* remove class 'active' from all articles */
     const activeArticles = document.querySelectorAll('.posts article.active');
     for (let activeArticle of activeArticles) {
       activeArticle.classList.remove('active');
     }
-    
+
     /* get 'href' attribute from the clicked link */
     const linkUrl = clickedElement.getAttribute('href');
-  
+
     /* find the correct article using the selector (value of 'href' attribute) */
     const activeArticle = document.querySelector(linkUrl);
-  
+
     /* add class 'active' to the correct article */
     activeArticle.classList.add('active');
   };
@@ -36,7 +36,7 @@
   const generateTitleLinks = function() {
     const titleList = document.querySelector(optTitleListSelector);
     titleList.innerHTML = '';
-          
+
     const articleList = document.querySelectorAll(optArticleSelector);
     for (let article of articleList) {
       const title = article.querySelector(optTitleSelector).innerHTML;
