@@ -1,20 +1,33 @@
 {
   'use strict';
 
-  const optArticleSelector = '.post',
-    optTitleSelector = '.post-title',
-    optTitleListSelector = '.titles',
-    optArticleTagsSelector = '.post-tags .list',
-    optArticleAuthorSelector = '.post-author',
-    optTagsListSelector = '.tags.list',
-    optCloudClassCount = 5,
-    optCloudClassPrefix = 'tag-size-';
+  const opts = {
+    articleSelector: '.post',
+    titleSelector: '.post-title',
+    titleListSelector: '.titles',
+    articleTagsSelector: '.post-tags .list',
+    articleAuthorSelector: '.post-author',
+    tagsListSelector: '.tags.list',
+    cloudClassCount: 5,
+    cloudClassPrefix: 'tag-size-',
+    authorsListSelector: '.authors.list'
+  };
+
+  // const optArticleSelector = '.post',
+  //   optTitleSelector = '.post-title',
+  //   optTitleListSelector = '.titles',
+  //   optArticleTagsSelector = '.post-tags .list',
+  //   optArticleAuthorSelector = '.post-author',
+  //   optTagsListSelector = '.tags.list',
+  //   optCloudClassCount = 5,
+  //   optCloudClassPrefix = 'tag-size-',
+  //   optAuthorsListSelector = '.authors.list';
 
   const titleClickHandler = function(event) {
     event.preventDefault();
     const clickedElement = this;
     /* remove class 'active' from all article links  */
-    const activeLinks = document.querySelectorAll(optTitleListSelector + ' a.active');
+    const activeLinks = document.querySelectorAll(opts.titleListSelector + ' a.active');
     for (let activeLink of activeLinks) {
       activeLink.classList.remove('active');
     }
@@ -39,17 +52,17 @@
   };
 
   const generateTitleLinks = function(customSelector = '') {
-    const titleList = document.querySelector(optTitleListSelector);
+    const titleList = document.querySelector(opts.titleListSelector);
     titleList.innerHTML = '';
 
-    const articleList = document.querySelectorAll(optArticleSelector + customSelector);
+    const articleList = document.querySelectorAll(opts.articleSelector + customSelector);
     for (let article of articleList) {
-      const title = article.querySelector(optTitleSelector).innerHTML;
+      const title = article.querySelector(opts.titleSelector).innerHTML;
       const articleId = article.getAttribute('id');
       const linkHTML = '<li><a href="#' + articleId + '"><span>' + title + '</span></a></li>';
       titleList.insertAdjacentHTML('beforeend', linkHTML);
 
-      const links = document.querySelectorAll(optTitleListSelector + ' a');
+      const links = document.querySelectorAll(opts.titleListSelector + ' a');
 
       for (let link of links) {
         link.addEventListener('click', titleClickHandler);
@@ -75,7 +88,7 @@
   };
 
   const calculateTagClass = function(count, params) {
-    return optCloudClassPrefix + Math.floor( ( (count - params.min) / (params.max - params.min) ) * (optCloudClassCount - 1) + 1 );
+    return opts.cloudClassPrefix + Math.floor( ( (count - params.min) / (params.max - params.min) ) * (opts.cloudClassCount - 1) + 1 );
   };
 
   const generateTags = function() {
@@ -88,7 +101,7 @@
     /* START LOOP: for every article: */
     for (let article of articles) {
       /* find tags wrapper */
-      const tagWrapper = article.querySelector(optArticleTagsSelector);
+      const tagWrapper = article.querySelector(opts.articleTagsSelector);
       /* make html variable with empty string */
       let html = '';
       /* get tags from data-tags attribute */
@@ -115,7 +128,7 @@
       /* END LOOP: for every article: */
     }
     /* [NEW] find list of tags in right column */
-    const tagList = document.querySelector(optTagsListSelector);
+    const tagList = document.querySelector(opts.tagsListSelector);
 
     const tagsParams = calculateTagsParams(allTags);
 
@@ -167,7 +180,7 @@
 
   const addClickListenersToTags = function() {
     /* find all links to tags */
-    var tagLinks = document.querySelectorAll(optArticleTagsSelector + ' a');
+    var tagLinks = document.querySelectorAll(opts.articleTagsSelector + ' a');
 
     /* START LOOP: for each link */
     for (let tagLink of tagLinks) {
@@ -180,20 +193,37 @@
   addClickListenersToTags();
 
   const generateAuthors = function() {
+    /* [NEW] create a new variable allTags with an empty object */
+    let authors = {};
     /* find all articles */
     const articles = document.querySelectorAll('article');
 
     /* START LOOP: for every article: */
     for (let article of articles) {
       /* find authors wrapper */
-      const authorWrapper = article.querySelector(optArticleAuthorSelector);
+      const authorWrapper = article.querySelector(opts.articleAuthorSelector);
       /* get author from data-author attribute */
       const author = article.getAttribute('data-author');
       /* create link for author */
       const authorHtml = '<a href="#author-' + author.toLowerCase().replace(' ', '-') + '">' + author + '</a>';
       /* add author link to wrapper */
       authorWrapper.innerHTML = authorHtml;
+
+      if (!authors[author]) {
+        authors[author] = 1;
+      } else {
+        authors[author]++;
+      }
     }
+
+    const authorsList = document.querySelector(opts.authorsListSelector);
+    let authorsHTML = '';
+
+    for(let author in authors) {
+      const authorHTML = '<li><a href="#tag-' + author + '">' + author + '(' + authors[author] + ')</a></li> ';
+      authorsHTML += authorHTML;
+    }
+    authorsList.innerHTML = authorsHTML;
   };
 
   generateAuthors();
@@ -229,7 +259,7 @@
 
   const addClickListenersToAuthors = function() {
     /* find all links to authors */
-    var authorLinks = document.querySelectorAll(optArticleAuthorSelector + ' a');
+    var authorLinks = document.querySelectorAll(opts.articleAuthorSelector + ' a');
 
     /* START LOOP: for each link */
     for (let authorLink of authorLinks) {
