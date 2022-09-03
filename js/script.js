@@ -190,7 +190,7 @@
 
   const addClickListenersToTags = function() {
     /* find all links to tags */
-    var tagLinks = document.querySelectorAll(opts.articleTagsSelector + ' a');
+    var tagLinks = document.querySelectorAll('a[href^="#tag-"]');
 
     /* START LOOP: for each link */
     for (let tagLink of tagLinks) {
@@ -214,9 +214,10 @@
       const authorWrapper = article.querySelector(opts.articleAuthorSelector);
       /* get author from data-author attribute */
       const author = article.getAttribute('data-author');
+      const authorId = 'author-' + author.toLowerCase().replace(' ', '-');
       /* create link for author */
       // const authorHtml = '<a href="#author-' + author.toLowerCase().replace(' ', '-') + '">' + author + '</a>';
-      const linkHTMLData = {id: 'author-' + author.toLowerCase().replace(' ', '-'), author: author};
+      const linkHTMLData = {id: authorId, author: author};
       const authorHtml = templates.authorLink(linkHTMLData);
 
       /* add author link to wrapper */
@@ -235,7 +236,7 @@
 
     for(let author in authors) {
       allAuthorsData.authors.push({
-        id: 'tag-' + author,
+        id: 'author-' + author.toLowerCase().replace(' ', '-'),
         author: author,
         count: authors[author],
       });
@@ -278,7 +279,8 @@
 
   const addClickListenersToAuthors = function() {
     /* find all links to authors */
-    var authorLinks = document.querySelectorAll(opts.articleAuthorSelector + ' a');
+    var authorLinks = document.querySelectorAll('a[href^="#author-"]');
+    console.log(authorLinks);
 
     /* START LOOP: for each link */
     for (let authorLink of authorLinks) {
